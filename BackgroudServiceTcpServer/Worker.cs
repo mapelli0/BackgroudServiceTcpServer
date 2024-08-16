@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace BackgroudServiceTcpServer;
 
@@ -24,9 +25,10 @@ public class Worker : BackgroundService
 
                 while (!stoppingToken.IsCancellationRequested) {
                     try {
-                        byte[] data = new byte[1024];
-                        _ = await stream.ReadAsync(data, 0, 1024, stoppingToken);
-                        _logger.LogInformation("data read: {p}", data.ToString());
+                        byte[] data = new byte[11];
+                        _ = await stream.ReadAsync(data, 0, 11, stoppingToken);
+                        var str = Encoding.ASCII.GetString(data);
+                        _logger.LogInformation("data read: {p}", str);
                     }
                     catch (SocketException se) {
                         _logger.LogError(se, "Connection error");
